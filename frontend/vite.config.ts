@@ -2,7 +2,6 @@ import { ConfigEnv, defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
-// https://vitejs.dev/config/
 export default ({ mode }: ConfigEnv) => {
   const env = loadEnv(mode, process.cwd(), "");
   return defineConfig({
@@ -18,6 +17,7 @@ export default ({ mode }: ConfigEnv) => {
     },
 
     server: {
+      host: '0.0.0.0',  // Add this line
       proxy: {
         "/api": {
           target: env.API_URL,

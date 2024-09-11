@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import AlertPopup from "../base/AlertPopup";
 import "./DayComponent.css";
 
 export type DayOfTheWeek =
@@ -22,6 +23,7 @@ export interface Recipe {
   instructions: string[];
   notes: string;
   RecipeIngredients: RecipeIngredient[];
+  servings: number;
 }
 
 export interface Ingredient {
@@ -34,6 +36,7 @@ export interface RecipeIngredient {
   ingredient: Ingredient;
   notes: string;
   amount: number;
+  unit: string;
 }
 
 export type Category =
@@ -44,7 +47,12 @@ export type Category =
   | "Grain"
   | "Spice"
   | "Herb"
-  | "Fats and Oils";
+  | "Fats and Oils"
+  | "Eggs"
+  | "Flour"
+  | "Sugar"
+  | "Liquid"
+  | "Other";
 
 export interface Day {
   dayOfTheWeek: DayOfTheWeek;
@@ -55,97 +63,103 @@ export interface Cart {
   recipeIngredients: RecipeIngredient[];
 }
 
-const DayComponent = ({
+interface DayComponentProps {
+  day: Day;
+  date: Date;
+  cart: Cart;
+  setCart: React.Dispatch<React.SetStateAction<Cart>>;
+  onClose: () => void;
+  onAddToCart: () => void;
+}
+
+const DayComponent: React.FC<DayComponentProps> = ({
   day,
   date,
   cart,
   setCart,
   onClose,
-}: {
-  day: Day;
-  date: Date;
-  cart: Cart;
-  setCart: (cart: Cart) => void;
-  onClose: () => void;
+  onAddToCart,
 }) => {
   return (
-    <div className="day-container">
-      <h1 style={{ fontSize: "2rem", fontWeight: "bold" }}>
-        {date.toDateString()}
-        <button
-          onClick={onClose}
-          style={{
-            position: "absolute",
-            right: "22%",
-            transform: "scale(0.5)",
-            top: "0%",
-            color: "white",
-          }}
-        >
-          ✕
-        </button>
-      </h1>
-
-      {day.Meals.map((meal) => (
-        <MealComponent
-          key={meal.mealId}
-          meal={meal}
-          cart={cart}
-          setCart={setCart}
-        />
-      ))}
+    <div className="relative bg-sky-400 text-md max-w-screen-lg mx-auto p-4 rounded-lg shadow-lg">
+      <div className="relative">
+        <h2 className="text-2xl font-bold mb-4">{date.toDateString()}</h2>
+        {day.Meals.map((meal) => (
+          <MealComponent
+            key={meal.mealId}
+            meal={meal}
+            cart={cart}
+            setCart={setCart}
+            onAddToCart={onAddToCart}
+          />
+        ))}
+      </div>
     </div>
   );
 };
 
-const MealComponent = ({
+interface MealComponentProps {
+  meal: Meal;
+  cart: Cart;
+  setCart: React.Dispatch<React.SetStateAction<Cart>>;
+  onAddToCart: () => void;
+}
+
+const MealComponent: React.FC<MealComponentProps> = ({
   meal,
   cart,
   setCart,
-}: {
-  meal: Meal;
-  cart: Cart;
-  setCart: (cart: Cart) => void;
+  onAddToCart,
 }) => {
   return (
-    <div className="meal-container">
-      <h2 className="meal-title">{meal.mealName}</h2>
+    <div className="bg-amber-300 p-4 mb-4 rounded-lg shadow-md">
+      <h2 className="text-xl font-semibold mb-2">{meal.mealName}</h2>
       {meal.recipes.map((recipe, index) => (
         <RecipeComponent
           key={index}
           recipe={recipe}
           cart={cart}
           setCart={setCart}
+          onAddToCart={onAddToCart}
         />
       ))}
     </div>
   );
 };
 
-const RecipeComponent = ({
+interface RecipeComponentProps {
+  recipe: Recipe;
+  cart: Cart;
+  setCart: React.Dispatch<React.SetStateAction<Cart>>;
+  onAddToCart: () => void;
+}
+
+const RecipeComponent: React.FC<RecipeComponentProps> = ({
   recipe,
   cart,
   setCart,
-}: {
-  recipe: Recipe;
-  cart: Cart;
-  setCart: (cart: Cart) => void;
+  onAddToCart,
 }) => {
   return (
-    <div className="recipe-container">
+    <div className="bg-white p-4 mb-4 rounded-lg shadow-md">
       <RecipeHeader recipe={recipe} />
-      <RecipeIngredients recipe={recipe} cart={cart} setCart={setCart} />
+      <RecipeIngredients
+        recipe={recipe}
+        cart={cart}
+        setCart={setCart}
+        onAddToCart={onAddToCart}
+      />
       <RecipeInstructions recipe={recipe} />
     </div>
   );
 };
 
-const RecipeHeader = ({ recipe }: { recipe: Recipe }) => {
+const RecipeHeader: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   return (
-    <div className="recipe-header">
-      <h3 className="recipe-title">{recipe.name}</h3>
+    <div className="bg-lime-200 p-2 mb-2 rounded-lg shadow-sm">
+      <h3 className="text-lg font-semibold">{recipe.name}</h3>
       {recipe.URL && (
-        <a href={recipe.URL} className="recipe-link">
+        <a href={recipe.URL} className="text-blue-500 underline">
           View Recipe
         </a>
       )}
@@ -153,35 +167,47 @@ const RecipeHeader = ({ recipe }: { recipe: Recipe }) => {
   );
 };
 
-const RecipeIngredients = ({
+interface RecipeIngredientsProps {
+  recipe: Recipe;
+  cart: Cart;
+  setCart: React.Dispatch<React.SetStateAction<Cart>>;
+  onAddToCart: () => void;
+}
+
+const RecipeIngredients: React.FC<RecipeIngredientsProps> = ({
   recipe,
   cart,
   setCart,
-}: {
-  recipe: Recipe;
-  cart: Cart;
-  setCart: (cart: Cart) => void;
+  onAddToCart,
 }) => {
+  const [showAlert, setShowAlert] = useState(false);
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+  };
+
   return (
-    <div className="recipe-ingredients-container">
-      <h4 className="ingredients-title">Ingredients</h4>
-      <ul className="recipe-ingredients">
+    <div className="bg-green-500 p-4 rounded-lg mb-4">
+      <h4 className="text-lg font-semibold mb-2">Ingredients</h4>
+      <ul className="list-disc pl-5">
         {recipe.RecipeIngredients.map((recipeIngredient, index) => (
-          <li key={index} className="ingredient-item">
+          <li key={index} className="flex justify-between items-center mb-2">
             <span>
-              {recipeIngredient.ingredient.name} {recipeIngredient.amount}
+              {recipeIngredient.ingredient.name} {recipeIngredient.amount}{" "}
+              {recipeIngredient.unit}
             </span>
             <button
               onClick={() => {
-                setCart({
+                setCart((prevCart) => ({
                   recipeIngredients: [
-                    ...cart.recipeIngredients,
+                    ...prevCart.recipeIngredients,
                     recipeIngredient,
                   ],
-                });
-                console.log(cart.recipeIngredients);
+                }));
+                setShowAlert(true);
+                onAddToCart();
               }}
-              className="add-to-cart-btn"
+              className="bg-cyan-100 text-black px-2 py-1 rounded-full"
               title="Add to cart"
             >
               +
@@ -189,17 +215,27 @@ const RecipeIngredients = ({
           </li>
         ))}
       </ul>
+
+      {showAlert && (
+        <AlertPopup
+          message="Items added to cart!"
+          onClose={handleCloseAlert}
+          onGoToCart={() => {}}
+        />
+      )}
     </div>
   );
 };
 
-const RecipeInstructions = ({ recipe }: { recipe: Recipe }) => {
+const RecipeInstructions: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   return (
-    <div className="recipe-instructions">
-      <h4 className="instructions-title">Instructions</h4>
-      <ol>
+    <div className="bg-sky-300 p-4 rounded-lg">
+      <h4 className="text-lg font-semibold mb-2">Instructions</h4>
+      <ol className="list-decimal pl-5">
         {recipe.instructions.map((instruction, index) => (
-          <li key={index}>{instruction}</li>
+          <li key={index} className="mb-1">
+            {instruction}
+          </li>
         ))}
       </ol>
     </div>

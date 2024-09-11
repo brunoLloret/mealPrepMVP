@@ -324,6 +324,7 @@ const shoppingList4: ShoppingList = {
 
 
 
+
 export const listOfShoppingLists = {
     list1: [
         { ingredient: { name: "Pancetta", category: 'Meat' }, notes: "Fry until crispy", amount: 150, unit: "grams" },

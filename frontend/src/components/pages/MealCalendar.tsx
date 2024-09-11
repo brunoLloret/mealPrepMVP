@@ -1,35 +1,94 @@
 import React, { useState } from "react";
 import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
+import "./MealCalendar.css";
 import DayComponent from "./DayComponent";
-import { Day, sampleDay } from "../types/mealTypes";
+import { Day, sampleDay, Cart, RecipeIngredient } from "../types/mealTypes";
+import { Value } from "react-calendar/dist/cjs/shared/types";
 
-const MealCalendar: React.FC = ({ cart, setCart }) => {
+interface MealCalendarProps {
+  cart: Cart;
+  setCart: React.Dispatch<React.SetStateAction<Cart>>;
+  onAddToCart: (ingredient: RecipeIngredient) => void;
+}
+
+const MealCalendar: React.FC<MealCalendarProps> = ({
+  cart,
+  setCart,
+  onAddToCart,
+}) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  const handleDateClick = (date: Date) => {
-    setSelectedDate(date);
-    console.log(date);
+  const handleDateClick = (value: Value) => {
+    if (value instanceof Date) {
+      setSelectedDate(value);
+      console.log(value);
+    }
+  };
+
+  const CustomCalendarHeader = ({ date, view, onClickPrev, onClickNext }) => {
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const monthLabel = months[date.getMonth()];
+    const yearLabel = date.getFullYear();
+
+    return (
+      <div className="custom-calendar-header">
+        <button onClick={() => onClickPrev()} title="Previous month">
+          &lsaquo;
+        </button>
+        <span>{`${monthLabel} ${yearLabel}`}</span>
+        <button onClick={() => onClickNext()} title="Next month">
+          &rsaquo;
+        </button>
+      </div>
+    );
   };
 
   return (
-    <div className="flex flex-col min-h-screen p-4 w-full">
-      <h2 className="text-2xl font-bold mb-4">Meal Calendar</h2>
-      {selectedDate ? (
-        <DayView
-          day={sampleDay}
-          onClose={() => setSelectedDate(null)}
-          cart={cart}
-          setCart={setCart}
-          date={selectedDate}
-        />
-      ) : (
-        <Calendar
-          onChange={handleDateClick}
-          value={selectedDate}
-          className="w-full h-3/4"
-        />
-      )}
+    <div className="react-calendar">
+      <div className="calendar-body">
+        <h2 className="text-2xl font-bold mb-4 text-sky-800">meal calendar</h2>
+        {selectedDate ? (
+          <DayView
+            day={sampleDay}
+            onClose={() => setSelectedDate(null)}
+            cart={cart}
+            setCart={setCart}
+            date={selectedDate}
+            onAddToCart={onAddToCart}
+          />
+        ) : (
+          <Calendar
+            onChange={handleDateClick}
+            value={selectedDate}
+            className="w-full h-3/4"
+            view="month"
+            navigation={({ date, view, onClickPrev, onClickNext }) => (
+              <CustomCalendarHeader
+                date={date}
+                view={view}
+                onClickPrev={onClickPrev}
+                onClickNext={onClickNext}
+              />
+            )}
+            formatShortWeekday={(locale, date) =>
+              ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()]
+            }
+          />
+        )}
+      </div>
     </div>
   );
 };
@@ -37,7 +96,10 @@ const MealCalendar: React.FC = ({ cart, setCart }) => {
 interface DayViewProps {
   day: Day;
   onClose: () => void;
+  cart: Cart;
+  setCart: React.Dispatch<React.SetStateAction<Cart>>;
   date: Date;
+  onAddToCart: (ingredient: RecipeIngredient) => void;
 }
 
 const DayView: React.FC<DayViewProps> = ({
@@ -46,21 +108,23 @@ const DayView: React.FC<DayViewProps> = ({
   cart,
   setCart,
   date,
+  onAddToCart,
 }) => (
-  <div className="relative">
-    <DayComponent
-      day={day}
-      cart={cart}
-      setCart={setCart}
-      date={date}
-      onClose={onClose}
-    />
+  <div className="DayViewWrapper">
+    <button className="CloseButton" onClick={onClose}>
+      X
+    </button>
+    <div className="DayViewContainer">
+      <DayComponent
+        day={day}
+        cart={cart}
+        setCart={setCart}
+        date={date}
+        onClose={onClose}
+        onAddToCart={onAddToCart}
+      />
+    </div>
   </div>
 );
 
 export default MealCalendar;
-
-// TODO: Calculate all ingredients for either a recipe, meal, or day
-// Week, Day, Meal, Recipe, Individual ingredial
-
-// const ingredientTotal = Ingredient: []

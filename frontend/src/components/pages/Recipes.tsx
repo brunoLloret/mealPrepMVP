@@ -1,12 +1,12 @@
+import React, { useState } from "react";
 import RecipeCreator from "../compound/RecipeCreator/RecipeCreator";
 import AllRecipes from "../compound/RecipeCreator/AllRecipes";
 import seeRecipes from "../../assets/readingBook.png";
 import createNewRecipe from "../../assets/createNewList.png";
 import cookingBowl from "../../assets/frontImage.png";
-import React, { useState, useEffect } from "react";
 
-const Recipes = () => {
-  const [view, setView] = useState("lists");
+const Recipes: React.FC = () => {
+  const [view, setView] = useState<"lists" | "create recipe">("lists");
 
   const getIconSrc = () => {
     switch (view) {
@@ -19,34 +19,31 @@ const Recipes = () => {
     }
   };
 
-  const handleOnView = (view: string) => {
-    setView(view);
+  const handleOnView = (newView: "lists" | "create recipe") => {
+    setView(newView);
   };
 
   return (
-    <div className=" pt-8 overflow-y-auto bg-sky-400 flex flex-col min-h-screen w-full max-w-screen-lg mx-auto px-3">
-      {/* Logo and buttons section */}
-      <div className="p-4 flex flex-row items-center justify-between">
-        {/* "Your recipes" button */}
+    <div className="bg-sky-400 flex flex-col min-h-screen w-full max-w-screen-lg mx-auto px-8 pt-12 ">
+      {/* Main buttons */}
+      <div className="flex justify-between items-center mb-8 mx-[-8%]">
         <button
-          className="py-2 px-4 font-mono text-justify-center font-semibold text-md bg-blue-500 h-24 w-28 text-white rounded-3xl border-8 border-b-blue-800 border-l-blue-950"
+          className="bg-blue-500 text-white font-mono font-semibold w-28 h-28 rounded-full shadow-md flex items-center justify-center transform skew-y-[-5deg] border-8 border-b-blue-800 border-l-blue-950"
           onClick={() => handleOnView("lists")}
         >
           your recipes
         </button>
 
-        {/* Icon */}
-        <div className="flex items-center justify-center rounded-full border-8 border-fuchsia-300">
+        <div className="w-28 h-28 rounded-full border-8 border-fuchsia-300 flex items-center justify-center bg-white">
           <img
             src={getIconSrc()}
             alt="Current View Icon"
-            className="w-28 h-28 p-2 rounded-full border-1 border-fuchsia-300 object-cover"
+            className="w-24 h-24 object-cover rounded-full"
           />
         </div>
 
-        {/* "New" button */}
         <button
-          className="py-2 px-4 font-mono font-semibold text-md bg-fuchsia-400  h-24 w-28 text-white rounded-3xl border-8 border-b-fuchsia-700 border-l-fuchsia-950"
+          className="bg-fuchsia-400 text-white font-mono font-semibold w-28 h-28 rounded-full shadow-md flex items-center justify-center transform skew-y-[5deg] border-8 border-b-fuchsia-700 border-l-fuchsia-950"
           onClick={() => handleOnView("create recipe")}
         >
           new recipe

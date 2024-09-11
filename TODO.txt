@@ -1,0 +1,3 @@
+Styling to new recipe components
+Store and functions in general!
+

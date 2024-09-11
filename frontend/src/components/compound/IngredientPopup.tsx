@@ -1,6 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { RecipeIngredient, Category } from "../../../../shared/interfaces";
 
+export interface Recipe {
+  name: string;
+  URL?: string;
+  instructions: string[];
+  notes: string;
+  servings: number;
+  RecipeIngredients: RecipeIngredient[];
+}
+
+export interface Ingredient {
+  name: string;
+  category: Category;
+  // notes: string;
+}
+
+export type Category =
+  | "Fruit"
+  | "Vegetable"
+  | "Meat"
+  | "Fish"
+  | "Dairy"
+  | "Grain"
+  | "Spice"
+  | "Herb"
+  | "Fats and Oils"
+  | "Eggs"
+  | "Flour"
+  | "Sugar"
+  | "Liquid"
+  | "Other";
+
+export interface RecipeIngredient {
+  ingredient: Ingredient;
+  notes: string;
+  amount: number;
+  unit: string;
+}
+
 interface IngredientPopupProps {
   onClose: () => void;
   onAddIngredient: (ingredient: RecipeIngredient) => void;
@@ -28,8 +66,8 @@ const IngredientPopup: React.FC<IngredientPopupProps> = ({
   const [unitInput, setUnitInput] = useState<string>(
     ingredientToEdit?.unit || "unit"
   );
-  const [categoryInput, setCategoryInput] = useState<Category["name"]>(
-    ingredientToEdit?.ingredient.category?.name || "Fruit"
+  const [categoryInput, setCategoryInput] = useState<Category>(
+    ingredientToEdit?.ingredient.category || "Fruit"
   );
 
   const [name, setName] = useState(ingredientToEdit?.ingredient.name || "");
@@ -37,7 +75,6 @@ const IngredientPopup: React.FC<IngredientPopupProps> = ({
     ingredientToEdit?.amount.toString() || ""
   );
   const [unit, setUnit] = useState(ingredientToEdit?.unit || "");
-
   useEffect(() => {
     console.log("useEffect triggered with ingredientToEdit:", ingredientToEdit);
     if (ingredientToEdit) {
@@ -45,7 +82,7 @@ const IngredientPopup: React.FC<IngredientPopupProps> = ({
       setIngredientInput(ingredientToEdit.ingredient.name);
       setAmountInput(ingredientToEdit.amount.toString());
       setUnitInput(ingredientToEdit.unit);
-      setCategoryInput(ingredientToEdit.ingredient.category?.name || "Fruit");
+      setCategoryInput(ingredientToEdit.ingredient.category);
     } else {
       console.log("Resetting state (no ingredientToEdit)");
       setIngredientInput("");
@@ -74,19 +111,16 @@ const IngredientPopup: React.FC<IngredientPopupProps> = ({
   ) => {
     recognizeUnit(e.target.value);
   };
-
   const handleSubmit = () => {
     if (ingredientInput.trim() !== "" && amountInput.trim() !== "") {
       const updatedIngredient: RecipeIngredient = {
         ingredient: {
           name: ingredientInput,
-          category: { name: categoryInput, description: "" },
-          amount: parseFloat(amountInput),
-          unit: unitInput,
-          notes: "",
+          category: categoryInput,
         },
         amount: parseFloat(amountInput),
         unit: unitInput,
+        notes: "",
       };
 
       console.log("Submitting ingredient:", updatedIngredient);

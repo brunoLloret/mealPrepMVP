@@ -1,0 +1,180 @@
+/* MealCalendar.css */
+
+.react-calendar {
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 49, 87, 0.1); /* Subtle shadow */
+    max-width: 800px; /* Set a max-width for the calendar */
+    margin: 0 auto; /* Center horizontally */
+}
+
+.react-calendar__navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    width: 100%; /* Ensure navigation spans the full width */
+}
+
+.react-calendar__navigation__label {
+    font-weight: bold;
+    font-size: 1.2rem;
+    background-color: #f87171; /* Apply background color */
+    color: white; /* Ensure text is readable */
+    border: none;
+    padding: 0.5rem 1rem; /* Add padding for better appearance */
+    border-radius: 0.25rem; /* Slight rounding of corners */
+    height: 60px; /* Fixed height for the month label */
+    display: flex; /* Flexbox for centering */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+}
+
+.react-calendar__navigation__prev-button,
+.react-calendar__navigation__next-button,
+.react-calendar__navigation__prev2-button,
+.react-calendar__navigation__next2-button {
+    background-color: #f87171; /* Apply background color */
+    font-weight: bold;
+    color: white; /* Ensure text/icon is readable */
+
+    border-radius: 25%;
+    font-weight: bold;
+    width: 40px;
+    height: 40px; /* Ensure buttons are circular */
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.react-calendar__navigation__prev-button:hover,
+.react-calendar__navigation__next-button:hover {
+    background-color: #d63c3c; /* Darker shade on hover */
+}
+
+/* Ensure calendar tiles are styled */
+.react-calendar__month-view__days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for days of the week */
+}
+
+.react-calendar__tile {
+    padding: 0.5rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.react-calendar__tile--active {
+    background: #007bff; /* Optional: Highlight active tile */
+    color: white;
+    border-radius: 50%;
+}
+
+.calendar-body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+h2 {
+    color: #0284c7; /* Sky-blue color for the header */
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.react-calendar .react-calendar__tile {
+    border-radius: 0.25rem;
+    border-width: 2px;
+    border-color: purple;
+    transition: background-color 0.3s ease;
+    background-color: #f87171;
+}
+
+.react-calendar .react-calendar__tile--active {
+    background-color: #0284c7; /* Highlight active date */
+    color: white;
+    border-radius: 0.25rem;
+}
+
+.react-calendar .react-calendar__tile--hover {
+    background-color: #dbeafe; /* Light blue on hover */
+}
+
+.w-full {
+    width: 100%;
+}
+
+.relative {
+    position: relative;
+}
+
+.DayViewContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+}
+
+.DayViewHeader {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.CloseButton {
+    background-color: #f87171; /* Red color for close button */
+    justify-content: flex-end;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.CloseButton:hover {
+    background-color: #ef4444; /* Darker red on hover */
+}
+
+.DayComponentContainer {
+    width: 100%;
+    padding: 1rem;
+}
+
+@media (max-width: 768px) {
+    .react-calendar {
+        width: 100%;
+        max-width: none;
+    }
+
+    .DayViewContainer {
+        width: 100%;
+    }
+}
+
+.DayViewWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+}

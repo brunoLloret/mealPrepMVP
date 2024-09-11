@@ -4,7 +4,6 @@ import {
   SignInButton,
   UserButton,
 } from "@clerk/clerk-react";
-import React from "react";
 
 import Front from "../src/components/pages/Front";
 
@@ -13,12 +12,12 @@ const App = () => {
     <>
       <div className="bg-sky-500 w-full min-h-screen">
         <header className="text-white">
-          <SignedOut>
+          {/* <SignedOut>
             <SignInButton />
           </SignedOut>
           <SignedIn>
             <UserButton />
-          </SignedIn>
+          </SignedIn> */}
         </header>
         <div>
           <Front />

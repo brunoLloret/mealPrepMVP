@@ -28,12 +28,47 @@
 
 import React, { useState } from "react";
 
-// interfaces and types
-import {
-  Recipe,
-  RecipeIngredient,
-  ShoppingList,
-} from "../../../../../shared/interfaces";
+// Interfaces and types
+export interface Recipe {
+  name: string;
+  URL?: string;
+  instructions: string[];
+  notes: string;
+  servings: number;
+  RecipeIngredients: RecipeIngredient[];
+}
+
+export interface Ingredient {
+  name: string;
+  category: Category;
+}
+
+export type Category =
+  | "Fruit"
+  | "Vegetable"
+  | "Meat"
+  | "Fish"
+  | "Dairy"
+  | "Grain"
+  | "Spice"
+  | "Herb"
+  | "Fats and Oils"
+  | "Eggs"
+  | "Flour"
+  | "Sugar"
+  | "Liquid"
+  | "Other";
+
+export interface RecipeIngredient {
+  ingredient: Ingredient;
+  notes: string;
+  amount: number;
+  unit: string;
+}
+
+export interface ShoppingList {
+  ingredients: Ingredient[];
+}
 
 // API service
 import recipeService from "../../../../API/recipeService";
@@ -47,16 +82,13 @@ const RecipeCreator: React.FC = () => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
+  const [servings, setServings] = useState<number>(1);
 
   const [ingredients, setIngredients] = useState<RecipeIngredient[]>([]);
   const [steps, setSteps] = useState<string[]>([]);
   const [showIngredientPopup, setShowIngredientPopup] =
     useState<boolean>(false);
   const [showStepPopup, setShowStepPopup] = useState<boolean>(false);
-
-  const [isEditingIngredients, setIsEditingIngredients] =
-    useState<boolean>(false);
-  const [isEditingSteps, setIsEditingSteps] = useState<boolean>(false);
 
   const [ingredientToEdit, setIngredientToEdit] =
     useState<RecipeIngredient | null>(null);
@@ -130,6 +162,7 @@ const RecipeCreator: React.FC = () => {
       name: title,
       instructions: steps,
       notes: notes,
+      servings: servings,
       RecipeIngredients: ingredients,
     };
 
@@ -167,7 +200,6 @@ const RecipeCreator: React.FC = () => {
         break;
     }
   };
-
   return (
     <>
       <div className="p-4 min-h-screen flex flex-col bg-sky-400 gap-4">
@@ -190,9 +222,9 @@ const RecipeCreator: React.FC = () => {
             {isEditing ? (
               <button
                 onClick={handleSaveClick}
-                className="bg-blue-500 font-mono font-bold text-white rounded-full px-4 py-2"
+                className="bg-orange-400 font-mono font-bold text-white rounded-full px-4 py-2"
               >
-                Save
+                save
               </button>
             ) : (
               <button
@@ -212,7 +244,7 @@ const RecipeCreator: React.FC = () => {
             </h2>
             <button
               onClick={() => setShowIngredientPopup(true)}
-              className="bg-green-600 font-mono font-semibold text-white rounded-full w-20 px-4 py-2 border-2"
+              className="bg-emerald-200 font-mono font-semibold text-emerald-800 rounded-full w-20 px-4 py-2 border-2"
             >
               add
             </button>
@@ -277,6 +309,21 @@ const RecipeCreator: React.FC = () => {
               </li>
             ))}
           </ol>
+        </div>
+
+        {/* New Servings section */}
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg text-sky-900 font-bold font-mono">
+              servings
+            </h2>
+            <input
+              type="number"
+              value={servings}
+              onChange={(e) => setServings(Number(e.target.value))}
+              className="bg-sky-300 border-1 border-gray-300 rounded-xl px-3 font-semibold text-sky-700 h-8 w-20"
+            />
+          </div>
         </div>
 
         <div className="flex flex-col flex-grow gap-4">

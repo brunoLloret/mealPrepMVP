@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import seeAllList from "../../assets/seeAllList.png";
 import createNewList from "../../assets/createNewList.png";
 import shoppingIcon from "../../assets/shoppingIcon.png";
 import Lists from "../compound/Shopping/Lists";
 import FinalListCreator from "../compound/Shopping/FinalListCreator";
-import ShoppingOrder from "../compound/Shopping/ShoppingOrder";
-import { LucideSquareArrowDownRight, ShoppingCartIcon } from "lucide-react";
+import ShoppingOrderPopup from "../compound/Shopping/ShoppingOrderPopup";
+import PlaceOrderPopup from "../../components/base/PlaceOrderPopup";
+import { Cart, ShoppingLists } from "../types/mealTypes";
 
-// Define the type for lists if not already defined
+import { ShoppingCartIcon } from "lucide-react";
+
 type Ingredient = {
   ingredient: {
     name: string;
@@ -18,8 +20,8 @@ type Ingredient = {
   unit: string;
 };
 
-type Cart = {
-  recipeIngredients: RecipeIngredient[];
+export type Cart = {
+  recipeIngredients: Omit<Ingredient, "notes">[];
 };
 
 type ShoppingLists = {
@@ -34,18 +36,17 @@ type ShoppingProps = {
 
 const Shopping: React.FC<ShoppingProps> = ({ lists, cart, setCart }) => {
   const [view, setView] = useState("lists");
+  const [showOrderPopup, setShowOrderPopup] = useState(false);
+  const [showPlaceOrderPopup, setShowPlaceOrderPopup] = useState(false);
 
-  // Determine the icon based on the current view
   const getIconSrc = () => {
     switch (view) {
       case "lists":
         return seeAllList;
       case "create unified list":
         return createNewList;
-      case "place a shopping order":
-        return shoppingIcon;
       default:
-        return seeAllList; // Fallback icon
+        return shoppingIcon;
     }
   };
 
@@ -53,9 +54,17 @@ const Shopping: React.FC<ShoppingProps> = ({ lists, cart, setCart }) => {
     setView(view);
   };
 
+  const handleShowOrderPopup = useCallback(() => {
+    setShowOrderPopup(true);
+  }, []);
+
+  const handlePlaceOrder = useCallback(() => {
+    setShowPlaceOrderPopup(true);
+    setShowOrderPopup(false);
+  }, []);
+
   return (
-    <div className="fixed bg-sky-400 flex flex-col min-h-screen w-full max-w-screen-lg mx-auto ">
-      {/* Centered container */}
+    <div className="fixed bg-sky-400 flex flex-col min-h-screen w-full max-w-screen-lg mx-auto">
       <div className="flex flex-col items-center justify-center h-full relative">
         {/* Button Container */}
         <div className="flex flex-col items-center space-y-4">
@@ -94,10 +103,9 @@ const Shopping: React.FC<ShoppingProps> = ({ lists, cart, setCart }) => {
           <div className="flex space-x-4">
             <button
               className="flex flex-col justify-center items-center py-4 font-mono font-semibold text-md bg-red-500 text-white rounded-full border-8 border-b-red-800 border-l-red-950"
-              onClick={() => handleOnView("place a shopping order")}
+              onClick={handleShowOrderPopup}
             >
               <ShoppingCartIcon />
-              place your order
             </button>
           </div>
         </div>
@@ -105,13 +113,35 @@ const Shopping: React.FC<ShoppingProps> = ({ lists, cart, setCart }) => {
         {/* Render component based on view state */}
         <div className="flex flex-col items-center mt-8">
           {view === "lists" && (
-            <Lists lists={lists} cart={cart} setCart={setCart} />
+            <Lists
+              lists={lists}
+              cart={cart}
+              setCart={setCart}
+              onGoToCart={handleShowOrderPopup}
+            />
           )}
           {view === "create unified list" && (
-            <FinalListCreator setCart={setCart} cart={cart} />
+            <FinalListCreator
+              setCart={setCart}
+              cart={cart}
+              onGoToCart={handleShowOrderPopup}
+            />
           )}
-          {view === "place a shopping order" && <ShoppingOrder cart={cart} />}
         </div>
+
+        {/* Render the ShoppingOrderPopup when showOrderPopup is true */}
+        {showOrderPopup && (
+          <ShoppingOrderPopup
+            onClose={() => setShowOrderPopup(false)}
+            cart={cart}
+            onPlaceOrder={handlePlaceOrder}
+          />
+        )}
+
+        {/* Render the PlaceOrderPopup when showPlaceOrderPopup is true */}
+        {showPlaceOrderPopup && (
+          <PlaceOrderPopup onClose={() => setShowPlaceOrderPopup(false)} />
+        )}
       </div>
     </div>
   );

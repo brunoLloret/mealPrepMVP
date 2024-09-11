@@ -1,9 +1,8 @@
-import { object } from "prop-types";
+
 
 export interface Recipe {
     name: string;
     URL?: string;
-    recipeCategory: RecipeCategory;
     instructions: string[];
     notes: string;
     servings: number;
@@ -27,7 +26,7 @@ export type Category = 'Fruit' | 'Vegetable' | 'Meat' | 'Fish' | 'Dairy' | 'Grai
 export interface RecipeIngredient {
     ingredient: Ingredient;
     notes: string;
-    quantity: number;
+    amount: number;
     unit: string;
 }
 
@@ -74,6 +73,8 @@ export type ShoppingListProps = {
 //     ‘PERSONAL_CARE’,
 //     ‘MISC’,
 // ] as const
+
+
 // export const UNITS = [
 //     ‘GRAMS’,
 //     ‘KILOGRAMS’,
