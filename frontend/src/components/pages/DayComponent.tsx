@@ -75,7 +75,9 @@ interface DayComponentProps {
 const DayComponent: React.FC<DayComponentProps> = ({
   day,
   date,
+  cart,
   setCart,
+  onClose,
   onAddToCart,
 }) => {
   return (

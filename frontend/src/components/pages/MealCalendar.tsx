@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Calendar from "react-calendar";
 import "./MealCalendar.css";
 import DayComponent from "./DayComponent";
-import { Day, sampleDay, Cart } from "../types/mealTypes";
+import { Day, sampleDay, Cart, RecipeIngredient } from "../types/mealTypes";
 import { Value } from "react-calendar/dist/cjs/shared/types";
 
 interface MealCalendarProps {
@@ -25,19 +25,7 @@ const MealCalendar: React.FC<MealCalendarProps> = ({
     }
   };
 
-  const CustomCalendarHeader = ({
-    label,
-    onChange,
-  }: {
-    label: string;
-    onChange: (value: Value) => void;
-  }) => {
-    const handleMonthChange = (direction: number) => {
-      const newDate = new Date(label);
-      newDate.setMonth(newDate.getMonth() + direction);
-      onChange(newDate);
-    };
-
+  const CustomCalendarHeader = ({ date, view, onClickPrev, onClickNext }) => {
     const months = [
       "Jan",
       "Feb",
@@ -52,35 +40,17 @@ const MealCalendar: React.FC<MealCalendarProps> = ({
       "Nov",
       "Dec",
     ];
-    const monthLabel = months[new Date(label).getMonth()];
-    const yearLabel = new Date(label).getFullYear();
+    const monthLabel = months[date.getMonth()];
+    const yearLabel = date.getFullYear();
 
     return (
       <div className="custom-calendar-header">
-        <button
-          className="react-calendar__navigation__prev2-button"
-          onClick={() => handleMonthChange(-12)}
-        >
-          &laquo;
-        </button>
-        <button
-          className="react-calendar__navigation__prev-button"
-          onClick={() => handleMonthChange(-1)}
-        >
+        <button onClick={() => onClickPrev()} title="Previous month">
           &lsaquo;
         </button>
-        <span className="react-calendar__navigation__label">{`${monthLabel} ${yearLabel}`}</span>
-        <button
-          className="react-calendar__navigation__next-button"
-          onClick={() => handleMonthChange(1)}
-        >
+        <span>{`${monthLabel} ${yearLabel}`}</span>
+        <button onClick={() => onClickNext()} title="Next month">
           &rsaquo;
-        </button>
-        <button
-          className="react-calendar__navigation__next2-button"
-          onClick={() => handleMonthChange(12)}
-        >
-          &raquo;
         </button>
       </div>
     );
@@ -105,15 +75,17 @@ const MealCalendar: React.FC<MealCalendarProps> = ({
             value={selectedDate}
             className="w-full h-3/4"
             view="month"
-            formatMonthYear={(locale, date) => (
+            navigation={({ date, view, onClickPrev, onClickNext }) => (
               <CustomCalendarHeader
-                label={date.toLocaleString(locale, {
-                  month: "long",
-                  year: "numeric",
-                })}
-                onChange={handleDateClick}
+                date={date}
+                view={view}
+                onClickPrev={onClickPrev}
+                onClickNext={onClickNext}
               />
             )}
+            formatShortWeekday={(locale, date) =>
+              ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()]
+            }
           />
         )}
       </div>
