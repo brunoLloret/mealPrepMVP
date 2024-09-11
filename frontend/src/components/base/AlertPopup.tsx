@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { XIcon, ShoppingCartIcon, ArrowLeftIcon } from "lucide-react";
+import { ShoppingCartIcon, ArrowLeftIcon } from "lucide-react";
 
 interface AlertPopupProps {
   message: string;

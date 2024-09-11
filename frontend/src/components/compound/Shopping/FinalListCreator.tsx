@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Pen, PenIcon, Trash, ShoppingBasketIcon } from "lucide-react";
 import AlertPopup from "@/components/base/AlertPopup";
+import { Cart, RecipeIngredient } from "../../types/mealTypes";
 
 type Ingredient = {
   ingredient: {
@@ -16,11 +17,11 @@ type Cart = {
   recipeIngredients: Ingredient[];
 };
 
-interface FinalListCreatorProps {
-  cart: Cart;
+type FinalListCreatorProps = {
   setCart: React.Dispatch<React.SetStateAction<Cart>>;
+  cart: Cart;
   onGoToCart: () => void;
-}
+};
 
 const initialList: Ingredient[] = [
   {
@@ -62,8 +63,8 @@ const initialList: Ingredient[] = [
 ];
 
 const FinalListCreator: React.FC<FinalListCreatorProps> = ({
-  cart,
   setCart,
+  cart,
   onGoToCart,
 }) => {
   const [list, setList] = useState<Ingredient[]>(initialList);
@@ -113,7 +114,7 @@ const FinalListCreator: React.FC<FinalListCreatorProps> = ({
     setList(updatedList);
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (items: RecipeIngredient[]) => {
     // Exclude notes from each item when adding to cart
     const itemsWithoutNotes = list.map(({ notes, ...item }) => item);
     setCart((prevCart) => ({
@@ -295,7 +296,6 @@ const FinalListCreator: React.FC<FinalListCreatorProps> = ({
             message="Items added to cart!"
             onClose={handleCloseAlert}
             onGoToCart={onGoToCart}
-            ingredients={cart.recipeIngredients}
           />
         )}
       </div>

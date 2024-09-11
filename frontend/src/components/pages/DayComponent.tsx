@@ -23,6 +23,7 @@ export interface Recipe {
   instructions: string[];
   notes: string;
   RecipeIngredients: RecipeIngredient[];
+  servings: number;
 }
 
 export interface Ingredient {
@@ -35,6 +36,7 @@ export interface RecipeIngredient {
   ingredient: Ingredient;
   notes: string;
   amount: number;
+  unit: string;
 }
 
 export type Category =
@@ -45,7 +47,12 @@ export type Category =
   | "Grain"
   | "Spice"
   | "Herb"
-  | "Fats and Oils";
+  | "Fats and Oils"
+  | "Eggs"
+  | "Flour"
+  | "Sugar"
+  | "Liquid"
+  | "Other";
 
 export interface Day {
   dayOfTheWeek: DayOfTheWeek;
@@ -55,37 +62,33 @@ export interface Day {
 export interface Cart {
   recipeIngredients: RecipeIngredient[];
 }
-const DayComponent = ({
-  day,
-  date,
-  cart,
-  setCart,
-  onClose,
-}: {
+
+interface DayComponentProps {
   day: Day;
   date: Date;
   cart: Cart;
-  setCart: (cart: Cart) => void;
+  setCart: React.Dispatch<React.SetStateAction<Cart>>;
   onClose: () => void;
+  onAddToCart: () => void;
+}
+
+const DayComponent: React.FC<DayComponentProps> = ({
+  day,
+  date,
+  setCart,
+  onAddToCart,
 }) => {
   return (
     <div className="relative bg-sky-400 text-md max-w-screen-lg mx-auto p-4 rounded-lg shadow-lg">
       <div className="relative">
-        <h2 className="text-2xl font-bold mb-4">
-          {date.toDateString()}
-          {/* <button
-            onClick={onClose}
-            className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full border-2 border-red-800"
-          >
-            ✕
-          </button> */}
-        </h2>
+        <h2 className="text-2xl font-bold mb-4">{date.toDateString()}</h2>
         {day.Meals.map((meal) => (
           <MealComponent
             key={meal.mealId}
             meal={meal}
             cart={cart}
             setCart={setCart}
+            onAddToCart={onAddToCart}
           />
         ))}
       </div>
@@ -93,14 +96,18 @@ const DayComponent = ({
   );
 };
 
-const MealComponent = ({
+interface MealComponentProps {
+  meal: Meal;
+  cart: Cart;
+  setCart: React.Dispatch<React.SetStateAction<Cart>>;
+  onAddToCart: () => void;
+}
+
+const MealComponent: React.FC<MealComponentProps> = ({
   meal,
   cart,
   setCart,
-}: {
-  meal: Meal;
-  cart: Cart;
-  setCart: (cart: Cart) => void;
+  onAddToCart,
 }) => {
   return (
     <div className="bg-amber-300 p-4 mb-4 rounded-lg shadow-md">
@@ -111,31 +118,41 @@ const MealComponent = ({
           recipe={recipe}
           cart={cart}
           setCart={setCart}
+          onAddToCart={onAddToCart}
         />
       ))}
     </div>
   );
 };
 
-const RecipeComponent = ({
+interface RecipeComponentProps {
+  recipe: Recipe;
+  cart: Cart;
+  setCart: React.Dispatch<React.SetStateAction<Cart>>;
+  onAddToCart: () => void;
+}
+
+const RecipeComponent: React.FC<RecipeComponentProps> = ({
   recipe,
   cart,
   setCart,
-}: {
-  recipe: Recipe;
-  cart: Cart;
-  setCart: (cart: Cart) => void;
+  onAddToCart,
 }) => {
   return (
     <div className="bg-white p-4 mb-4 rounded-lg shadow-md">
       <RecipeHeader recipe={recipe} />
-      <RecipeIngredients recipe={recipe} cart={cart} setCart={setCart} />
+      <RecipeIngredients
+        recipe={recipe}
+        cart={cart}
+        setCart={setCart}
+        onAddToCart={onAddToCart}
+      />
       <RecipeInstructions recipe={recipe} />
     </div>
   );
 };
 
-const RecipeHeader = ({ recipe }: { recipe: Recipe }) => {
+const RecipeHeader: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   return (
     <div className="bg-lime-200 p-2 mb-2 rounded-lg shadow-sm">
       <h3 className="text-lg font-semibold">{recipe.name}</h3>
@@ -148,17 +165,20 @@ const RecipeHeader = ({ recipe }: { recipe: Recipe }) => {
   );
 };
 
-const RecipeIngredients = ({
-  recipe,
-  cart,
-  setCart,
-}: {
+interface RecipeIngredientsProps {
   recipe: Recipe;
   cart: Cart;
   setCart: React.Dispatch<React.SetStateAction<Cart>>;
-  onGoToCart: () => void;
+  onAddToCart: () => void;
+}
+
+const RecipeIngredients: React.FC<RecipeIngredientsProps> = ({
+  recipe,
+  cart,
+  setCart,
+  onAddToCart,
 }) => {
-  const [showAlert, setShowAlert] = React.useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleCloseAlert = () => {
     setShowAlert(false);
@@ -182,8 +202,8 @@ const RecipeIngredients = ({
                     recipeIngredient,
                   ],
                 }));
-                // alert("Item added to cart!");
                 setShowAlert(true);
+                onAddToCart();
               }}
               className="bg-cyan-100 text-black px-2 py-1 rounded-full"
               title="Add to cart"
@@ -195,13 +215,17 @@ const RecipeIngredients = ({
       </ul>
 
       {showAlert && (
-        <AlertPopup message="Items added to cart!" onClose={handleCloseAlert} />
+        <AlertPopup
+          message="Items added to cart!"
+          onClose={handleCloseAlert}
+          onGoToCart={() => {}}
+        />
       )}
     </div>
   );
 };
 
-const RecipeInstructions = ({ recipe }: { recipe: Recipe }) => {
+const RecipeInstructions: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   return (
     <div className="bg-sky-300 p-4 rounded-lg">
       <h4 className="text-lg font-semibold mb-2">Instructions</h4>

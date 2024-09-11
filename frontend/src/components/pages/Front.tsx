@@ -3,7 +3,7 @@ import Recipes from "./Recipes";
 import MealCalendar from "./MealCalendar";
 import Shopping from "./Shopping";
 import frontImage from "../../assets/frontImage.png";
-import { RecipeIngredient } from "../types/mealTypes";
+import { Cart, ShoppingLists } from "../types/mealTypes";
 import { listOfShoppingLists } from "../../../../shared/sample";
 
 type Cart = {
@@ -12,15 +12,15 @@ type Cart = {
 
 const Front: React.FC = () => {
   const [view, setView] = useState<null | string>(null);
-  const [shoppingLists, setShoppingLists] = useState<object[]>([]);
   const [selectedDay, setSelectedDay] = useState<Day | null>(null);
+  const [shoppingLists, setShoppingLists] = useState<ShoppingLists>({});
   const [cart, setCart] = useState<Cart>({ recipeIngredients: [] });
 
   const handleViewChange = (newView: string) => {
     setView((prevView) => (prevView === newView ? null : newView));
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     setShoppingLists(listOfShoppingLists);
   }, []);
 
@@ -100,12 +100,7 @@ const Front: React.FC = () => {
           />
         )}
         {view === "shopping" && (
-          <Shopping
-            lists={shoppingLists}
-            cart={cart}
-            setCart={setCart}
-            onAddToCart={handleAddToCart}
-          />
+          <Shopping lists={shoppingLists} cart={cart} setCart={setCart} />
         )}
       </div>
     </div>

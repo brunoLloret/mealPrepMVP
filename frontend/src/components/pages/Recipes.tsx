@@ -4,7 +4,6 @@ import AllRecipes from "../compound/RecipeCreator/AllRecipes";
 import seeRecipes from "../../assets/readingBook.png";
 import createNewRecipe from "../../assets/createNewList.png";
 import cookingBowl from "../../assets/frontImage.png";
-import { ShoppingCartIcon } from "lucide-react";
 
 const Recipes: React.FC = () => {
   const [view, setView] = useState<"lists" | "create recipe">("lists");

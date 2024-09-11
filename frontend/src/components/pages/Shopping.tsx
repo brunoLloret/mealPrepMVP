@@ -6,6 +6,7 @@ import Lists from "../compound/Shopping/Lists";
 import FinalListCreator from "../compound/Shopping/FinalListCreator";
 import ShoppingOrderPopup from "../compound/Shopping/ShoppingOrderPopup";
 import PlaceOrderPopup from "../../components/base/PlaceOrderPopup";
+import { Cart, ShoppingLists } from "../types/mealTypes";
 
 import { ShoppingCartIcon } from "lucide-react";
 
@@ -19,7 +20,7 @@ type Ingredient = {
   unit: string;
 };
 
-type Cart = {
+export type Cart = {
   recipeIngredients: Omit<Ingredient, "notes">[];
 };
 

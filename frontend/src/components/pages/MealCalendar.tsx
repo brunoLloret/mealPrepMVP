@@ -2,22 +2,37 @@ import React, { useState } from "react";
 import Calendar from "react-calendar";
 import "./MealCalendar.css";
 import DayComponent from "./DayComponent";
-import { Day, sampleDay } from "../types/mealTypes";
+import { Day, sampleDay, Cart } from "../types/mealTypes";
+import { Value } from "react-calendar/dist/cjs/shared/types";
 
-const MealCalendar: React.FC<{ cart: any; setCart: any; onAddToCart: any }> = ({
+interface MealCalendarProps {
+  cart: Cart;
+  setCart: React.Dispatch<React.SetStateAction<Cart>>;
+  onAddToCart: (ingredient: RecipeIngredient) => void;
+}
+
+const MealCalendar: React.FC<MealCalendarProps> = ({
   cart,
   setCart,
   onAddToCart,
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  const handleDateClick = (date: Date) => {
-    setSelectedDate(date);
-    console.log(date);
+  const handleDateClick = (value: Value) => {
+    if (value instanceof Date) {
+      setSelectedDate(value);
+      console.log(value);
+    }
   };
 
-  const CustomCalendarHeader = ({ view, label, onChange }) => {
-    const handleMonthChange = (direction) => {
+  const CustomCalendarHeader = ({
+    label,
+    onChange,
+  }: {
+    label: string;
+    onChange: (value: Value) => void;
+  }) => {
+    const handleMonthChange = (direction: number) => {
       const newDate = new Date(label);
       newDate.setMonth(newDate.getMonth() + direction);
       onChange(newDate);
@@ -90,7 +105,15 @@ const MealCalendar: React.FC<{ cart: any; setCart: any; onAddToCart: any }> = ({
             value={selectedDate}
             className="w-full h-3/4"
             view="month"
-            formatMonthYearHeader={() => <CustomCalendarHeader />}
+            formatMonthYear={(locale, date) => (
+              <CustomCalendarHeader
+                label={date.toLocaleString(locale, {
+                  month: "long",
+                  year: "numeric",
+                })}
+                onChange={handleDateClick}
+              />
+            )}
           />
         )}
       </div>
@@ -101,7 +124,10 @@ const MealCalendar: React.FC<{ cart: any; setCart: any; onAddToCart: any }> = ({
 interface DayViewProps {
   day: Day;
   onClose: () => void;
+  cart: Cart;
+  setCart: React.Dispatch<React.SetStateAction<Cart>>;
   date: Date;
+  onAddToCart: (ingredient: RecipeIngredient) => void;
 }
 
 const DayView: React.FC<DayViewProps> = ({
@@ -117,7 +143,6 @@ const DayView: React.FC<DayViewProps> = ({
       X
     </button>
     <div className="DayViewContainer">
-      {/* <h2 className="DayViewDate">{date.toDateString()}</h2> */}
       <DayComponent
         day={day}
         cart={cart}
