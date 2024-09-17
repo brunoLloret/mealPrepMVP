@@ -193,7 +193,7 @@ const RecipeIngredients: React.FC<RecipeIngredientsProps> = ({
         {recipe.RecipeIngredients.map((recipeIngredient, index) => (
           <li key={index} className="flex justify-between items-center mb-2">
             <span>
-              {recipeIngredient.ingredient.name} {recipeIngredient.amount}{" "}
+              {recipeIngredient.name} {recipeIngredient.amount}{" "}
               {recipeIngredient.unit}
             </span>
             <button

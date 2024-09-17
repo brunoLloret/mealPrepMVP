@@ -3,7 +3,7 @@ import Recipes from "./Recipes";
 import MealCalendar from "./MealCalendar";
 import Shopping from "./Shopping";
 import frontImage from "../../assets/frontImage.png";
-import { Cart, ShoppingLists } from "../types/mealTypes";
+import { Cart, ShoppingLists, RecipeIngredient, Day } from "../types/mealTypes";
 import { listOfShoppingLists } from "../../../../shared/sample";
 
 type Cart = {
@@ -34,16 +34,7 @@ const Front: React.FC = () => {
 
   const handleAddToCart = (ingredient: RecipeIngredient) => {
     setCart((prevCart) => ({
-      recipeIngredients: [
-        ...prevCart.recipeIngredients,
-        {
-          ...ingredient,
-          ingredient: {
-            ...ingredient.ingredient,
-            category: ingredient.ingredient.category || "Uncategorized",
-          },
-        },
-      ],
+      recipeIngredients: [...prevCart.recipeIngredients, ingredient],
     }));
   };
 

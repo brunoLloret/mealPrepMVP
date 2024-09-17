@@ -1,18 +1,6 @@
 import React, { useMemo } from "react";
 import { XIcon } from "lucide-react";
-
-type Ingredient = {
-  ingredient: {
-    name: string;
-    category: string;
-  };
-  amount: number;
-  unit: string;
-};
-
-type Cart = {
-  recipeIngredients: Ingredient[];
-};
+import { Cart, RecipeIngredient, Category } from "../types/mealTypes";
 
 interface ShoppingOrderPopupProps {
   onClose: () => void;
@@ -31,9 +19,12 @@ const ShoppingOrderPopup: React.FC<ShoppingOrderPopupProps> = ({
   };
 
   const organizedIngredients = useMemo(() => {
-    const categorized: Record<string, Ingredient[]> = {};
+    const categorized: Record<Category, RecipeIngredient[]> = {} as Record<
+      Category,
+      RecipeIngredient[]
+    >;
     cart.recipeIngredients.forEach((item) => {
-      const category = item.ingredient.category || "Uncategorized";
+      const category = item.ingredient.category;
       if (!categorized[category]) {
         categorized[category] = [];
       }
