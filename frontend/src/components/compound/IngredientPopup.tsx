@@ -41,14 +41,14 @@ export interface RecipeIngredient {
 
 interface IngredientPopupProps {
   onClose: () => void;
-  onAddIngredient: (ingredient: RecipeIngredient) => void;
+  onAdd: (ingredient: RecipeIngredient) => void;
   onEditIngredient: (ingredient: RecipeIngredient) => void;
   ingredientToEdit: RecipeIngredient | null;
 }
 
 const IngredientPopup: React.FC<IngredientPopupProps> = ({
   onClose,
-  onAddIngredient,
+  onAdd,
   onEditIngredient,
   ingredientToEdit,
 }) => {
@@ -111,6 +111,7 @@ const IngredientPopup: React.FC<IngredientPopupProps> = ({
   ) => {
     recognizeUnit(e.target.value);
   };
+
   const handleSubmit = () => {
     if (ingredientInput.trim() !== "" && amountInput.trim() !== "") {
       const updatedIngredient: RecipeIngredient = {
@@ -127,7 +128,7 @@ const IngredientPopup: React.FC<IngredientPopupProps> = ({
       if (ingredientToEdit) {
         onEditIngredient(updatedIngredient);
       } else {
-        onAddIngredient(updatedIngredient);
+        onAdd(updatedIngredient);
       }
 
       onClose();

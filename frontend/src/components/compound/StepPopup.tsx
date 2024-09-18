@@ -3,14 +3,14 @@ import React, { useState, useEffect } from "react";
 interface StepPopupProps {
   onClose: () => void;
   onAddStep: (step: string) => void;
-  onEditStep: (index: number, step: string) => void;
+  onUpdateStep: (index: number, step: string) => void; // Changed from onEditStep to onUpdateStep
   stepToEdit: { index: number; step: string } | null;
 }
 
 const StepPopup: React.FC<StepPopupProps> = ({
   onClose,
   onAddStep,
-  onEditStep,
+  onUpdateStep,
   stepToEdit,
 }) => {
   const [stepInput, setStepInput] = useState<string>("");
@@ -26,7 +26,7 @@ const StepPopup: React.FC<StepPopupProps> = ({
   const handleSubmit = () => {
     if (stepInput.trim() !== "") {
       if (stepToEdit) {
-        onEditStep(stepToEdit.index, stepInput);
+        onUpdateStep(stepToEdit.index, stepInput);
       } else {
         onAddStep(stepInput);
       }
