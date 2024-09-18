@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import AlertPopup from "../base/AlertPopup";
 import "./DayComponent.css";
+import { Cart, RecipeIngredient } from "../../types/mealTypes";
 
 export type DayOfTheWeek =
   | "Monday"
@@ -24,12 +25,6 @@ export interface Recipe {
   notes: string;
   RecipeIngredients: RecipeIngredient[];
   servings: number;
-}
-
-export interface Ingredient {
-  name: string;
-  category: Category;
-  notes: string;
 }
 
 export interface RecipeIngredient {
@@ -59,17 +54,14 @@ export interface Day {
   Meals: Meal[];
 }
 
-export interface Cart {
-  recipeIngredients: RecipeIngredient[];
-}
-
 interface DayComponentProps {
   day: Day;
   date: Date;
   cart: Cart;
   setCart: React.Dispatch<React.SetStateAction<Cart>>;
   onClose: () => void;
-  onAddToCart: () => void;
+  onAddToCart: (ingredient: RecipeIngredient) => void;
+  onShowOrderPopup: () => void;
 }
 
 const DayComponent: React.FC<DayComponentProps> = ({
@@ -79,6 +71,7 @@ const DayComponent: React.FC<DayComponentProps> = ({
   setCart,
   onClose,
   onAddToCart,
+  onShowOrderPopup,
 }) => {
   return (
     <div className="relative bg-sky-400 text-md max-w-screen-lg mx-auto p-4 rounded-lg shadow-lg">
@@ -91,6 +84,7 @@ const DayComponent: React.FC<DayComponentProps> = ({
             cart={cart}
             setCart={setCart}
             onAddToCart={onAddToCart}
+            onShowOrderPopup={onShowOrderPopup}
           />
         ))}
       </div>
@@ -102,7 +96,8 @@ interface MealComponentProps {
   meal: Meal;
   cart: Cart;
   setCart: React.Dispatch<React.SetStateAction<Cart>>;
-  onAddToCart: () => void;
+  onAddToCart: (ingredient: RecipeIngredient) => void;
+  onShowOrderPopup: () => void;
 }
 
 const MealComponent: React.FC<MealComponentProps> = ({
@@ -110,6 +105,7 @@ const MealComponent: React.FC<MealComponentProps> = ({
   cart,
   setCart,
   onAddToCart,
+  onShowOrderPopup,
 }) => {
   return (
     <div className="bg-amber-300 p-4 mb-4 rounded-lg shadow-md">
@@ -121,6 +117,7 @@ const MealComponent: React.FC<MealComponentProps> = ({
           cart={cart}
           setCart={setCart}
           onAddToCart={onAddToCart}
+          onShowOrderPopup={onShowOrderPopup}
         />
       ))}
     </div>
@@ -131,7 +128,8 @@ interface RecipeComponentProps {
   recipe: Recipe;
   cart: Cart;
   setCart: React.Dispatch<React.SetStateAction<Cart>>;
-  onAddToCart: () => void;
+  onAddToCart: (ingredient: RecipeIngredient) => void;
+  onShowOrderPopup: () => void;
 }
 
 const RecipeComponent: React.FC<RecipeComponentProps> = ({
@@ -139,6 +137,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
   cart,
   setCart,
   onAddToCart,
+  onShowOrderPopup,
 }) => {
   return (
     <div className="bg-white p-4 mb-4 rounded-lg shadow-md">
@@ -148,6 +147,7 @@ const RecipeComponent: React.FC<RecipeComponentProps> = ({
         cart={cart}
         setCart={setCart}
         onAddToCart={onAddToCart}
+        onShowOrderPopup={onShowOrderPopup}
       />
       <RecipeInstructions recipe={recipe} />
     </div>
@@ -171,7 +171,8 @@ interface RecipeIngredientsProps {
   recipe: Recipe;
   cart: Cart;
   setCart: React.Dispatch<React.SetStateAction<Cart>>;
-  onAddToCart: () => void;
+  onAddToCart: (ingredient: RecipeIngredient) => void;
+  onShowOrderPopup: () => void;
 }
 
 const RecipeIngredients: React.FC<RecipeIngredientsProps> = ({
@@ -179,11 +180,20 @@ const RecipeIngredients: React.FC<RecipeIngredientsProps> = ({
   cart,
   setCart,
   onAddToCart,
+  onShowOrderPopup,
 }) => {
   const [showAlert, setShowAlert] = useState(false);
 
   const handleCloseAlert = () => {
     setShowAlert(false);
+  };
+
+  const handleAddToCart = (recipeIngredient: RecipeIngredient) => {
+    setCart((prevCart) => ({
+      recipeIngredients: [...prevCart.recipeIngredients, recipeIngredient],
+    }));
+    setShowAlert(true);
+    onAddToCart();
   };
 
   return (
@@ -193,20 +203,11 @@ const RecipeIngredients: React.FC<RecipeIngredientsProps> = ({
         {recipe.RecipeIngredients.map((recipeIngredient, index) => (
           <li key={index} className="flex justify-between items-center mb-2">
             <span>
-              {recipeIngredient.name} {recipeIngredient.amount}{" "}
+              {recipeIngredient.ingredient.name} {recipeIngredient.amount}{" "}
               {recipeIngredient.unit}
             </span>
             <button
-              onClick={() => {
-                setCart((prevCart) => ({
-                  recipeIngredients: [
-                    ...prevCart.recipeIngredients,
-                    recipeIngredient,
-                  ],
-                }));
-                setShowAlert(true);
-                onAddToCart();
-              }}
+              onClick={() => handleAddToCart(recipeIngredient)}
               className="bg-cyan-100 text-black px-2 py-1 rounded-full"
               title="Add to cart"
             >
@@ -220,7 +221,7 @@ const RecipeIngredients: React.FC<RecipeIngredientsProps> = ({
         <AlertPopup
           message="Items added to cart!"
           onClose={handleCloseAlert}
-          onGoToCart={() => {}}
+          onGoToCart={onShowOrderPopup}
         />
       )}
     </div>

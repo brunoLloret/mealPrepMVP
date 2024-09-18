@@ -9,12 +9,14 @@ interface MealCalendarProps {
   cart: Cart;
   setCart: React.Dispatch<React.SetStateAction<Cart>>;
   onAddToCart: (ingredient: RecipeIngredient) => void;
+  onShowOrderPopup: () => void;
 }
 
 const MealCalendar: React.FC<MealCalendarProps> = ({
   cart,
   setCart,
   onAddToCart,
+  onShowOrderPopup,
 }) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
@@ -68,6 +70,7 @@ const MealCalendar: React.FC<MealCalendarProps> = ({
             setCart={setCart}
             date={selectedDate}
             onAddToCart={onAddToCart}
+            onShowOrderPopup={onShowOrderPopup}
           />
         ) : (
           <Calendar
@@ -100,6 +103,7 @@ interface DayViewProps {
   setCart: React.Dispatch<React.SetStateAction<Cart>>;
   date: Date;
   onAddToCart: (ingredient: RecipeIngredient) => void;
+  onShowOrderPopup: () => void;
 }
 
 const DayView: React.FC<DayViewProps> = ({
@@ -109,6 +113,7 @@ const DayView: React.FC<DayViewProps> = ({
   setCart,
   date,
   onAddToCart,
+  onShowOrderPopup,
 }) => (
   <div className="DayViewWrapper">
     <button className="CloseButton" onClick={onClose}>
@@ -122,6 +127,7 @@ const DayView: React.FC<DayViewProps> = ({
         date={date}
         onClose={onClose}
         onAddToCart={onAddToCart}
+        onShowOrderPopup={onShowOrderPopup}
       />
     </div>
   </div>

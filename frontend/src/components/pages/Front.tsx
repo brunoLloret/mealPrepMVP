@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Recipes from "./Recipes";
 import MealCalendar from "./MealCalendar";
 import Shopping from "./Shopping";
 import frontImage from "../../assets/frontImage.png";
 import { Cart, ShoppingLists, RecipeIngredient, Day } from "../types/mealTypes";
 import { listOfShoppingLists } from "../../../../shared/sample";
+import ShoppingOrderPopup from "../compound/Shopping/ShoppingOrderPopup";
 
 type Cart = {
   recipeIngredients: RecipeIngredient[];
@@ -15,12 +16,14 @@ const Front: React.FC = () => {
   const [selectedDay, setSelectedDay] = useState<Day | null>(null);
   const [shoppingLists, setShoppingLists] = useState<ShoppingLists>({});
   const [cart, setCart] = useState<Cart>({ recipeIngredients: [] });
+  const [showOrderPopup, setShowOrderPopup] = useState(false);
+  const [showPlaceOrderPopup, setShowPlaceOrderPopup] = useState(false);
 
   const handleViewChange = (newView: string) => {
     setView((prevView) => (prevView === newView ? null : newView));
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setShoppingLists(listOfShoppingLists);
   }, []);
 
@@ -32,11 +35,28 @@ const Front: React.FC = () => {
     console.log("FRONT Cart has been updated", cart);
   }, [cart]);
 
-  const handleAddToCart = (ingredient: RecipeIngredient) => {
+  const handleAddToCart = useCallback((ingredient: RecipeIngredient) => {
     setCart((prevCart) => ({
       recipeIngredients: [...prevCart.recipeIngredients, ingredient],
     }));
-  };
+  }, []);
+
+  const handleShowOrderPopup = useCallback(() => {
+    setShowOrderPopup(true);
+  }, []);
+
+  const handleCloseOrderPopup = useCallback(() => {
+    setShowOrderPopup(false);
+  }, []);
+
+  const handlePlaceOrder = useCallback(() => {
+    setShowPlaceOrderPopup(true);
+    setShowOrderPopup(false);
+  }, []);
+
+  const handleClosePlaceOrderPopup = useCallback(() => {
+    setShowPlaceOrderPopup(false);
+  }, []);
 
   return (
     <div className="min-h-screen bg-sky-400 flex flex-col overflow-y-auto">
@@ -82,18 +102,41 @@ const Front: React.FC = () => {
           </div>
         )}
 
-        {view === "recipes" && <Recipes onAddToCart={handleAddToCart} />}
+        {view === "recipes" && (
+          <Recipes
+            onAddToCart={handleAddToCart}
+            onShowOrderPopup={handleShowOrderPopup}
+          />
+        )}
         {view === "calendar" && (
           <MealCalendar
             cart={cart}
             setCart={setCart}
             onAddToCart={handleAddToCart}
+            onShowOrderPopup={handleShowOrderPopup}
           />
         )}
         {view === "shopping" && (
-          <Shopping lists={shoppingLists} cart={cart} setCart={setCart} />
+          <Shopping
+            lists={shoppingLists}
+            cart={cart}
+            setCart={setCart}
+            onShowOrderPopup={handleShowOrderPopup}
+          />
         )}
       </div>
+
+      {showOrderPopup && (
+        <ShoppingOrderPopup
+          onClose={handleCloseOrderPopup}
+          cart={cart}
+          onPlaceOrder={handlePlaceOrder}
+        />
+      )}
+
+      {showPlaceOrderPopup && (
+        <PlaceOrderPopup onClose={handleClosePlaceOrderPopup} />
+      )}
     </div>
   );
 };

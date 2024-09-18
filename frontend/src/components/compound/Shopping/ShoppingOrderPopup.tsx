@@ -18,26 +18,53 @@ const ShoppingOrderPopup: React.FC<ShoppingOrderPopupProps> = ({
     onClose();
   };
 
+  const handleContinuePlanning = () => {
+    onClose();
+  };
+
   const organizedIngredients = useMemo(() => {
+    console.log("Cart contents:", cart); // Debugging line
+
     const categorized: Record<Category, RecipeIngredient[]> = {} as Record<
       Category,
       RecipeIngredient[]
     >;
-    cart.recipeIngredients.forEach((item) => {
-      const category = item.ingredient.category;
+
+    if (!cart.recipeIngredients || !Array.isArray(cart.recipeIngredients)) {
+      console.error(
+        "cart.recipeIngredients is not an array:",
+        cart.recipeIngredients
+      );
+      return categorized;
+    }
+
+    cart.recipeIngredients.forEach((item, index) => {
+      if (!item) {
+        console.error(`Undefined item at index ${index}`);
+        return; // Skip this iteration
+      }
+
+      console.log(`Processing item at index ${index}:`, item); // Debugging line
+
+      // Use a default category if the ingredient or category is undefined
+      const category = (item.ingredient?.category as Category) || "Other";
       if (!categorized[category]) {
         categorized[category] = [];
       }
+
       const existingItem = categorized[category].find(
         (i) =>
-          i.ingredient.name === item.ingredient.name && i.unit === item.unit
+          i.ingredient?.name === item.ingredient?.name && i.unit === item.unit
       );
+
       if (existingItem) {
         existingItem.amount += item.amount;
       } else {
         categorized[category].push({ ...item });
       }
     });
+
+    console.log("Organized ingredients:", categorized); // Debugging line
     return categorized;
   }, [cart.recipeIngredients]);
 
@@ -48,7 +75,7 @@ const ShoppingOrderPopup: React.FC<ShoppingOrderPopupProps> = ({
           <h3 className="text-lg font-semibold">Your Shopping Order</h3>
           <button
             onClick={onClose}
-            className="text-white hover:text-gray-700 hover:bg-red-600 bg-red-400"
+            className="text-white hover:text-gray-700 hover:bg-red-600 bg-red-400 p-1 rounded-full"
           >
             <XIcon size={20} />
           </button>
@@ -60,7 +87,9 @@ const ShoppingOrderPopup: React.FC<ShoppingOrderPopupProps> = ({
               <ul className="list-disc pl-5">
                 {items.map((item, index) => (
                   <li key={index} className="mb-2">
-                    <span className="font-medium">{item.ingredient.name}</span>{" "}
+                    <span className="font-medium">
+                      {item.ingredient?.name || "Unknown Ingredient"}
+                    </span>{" "}
                     - {item.amount} {item.unit}
                   </li>
                 ))}
@@ -68,7 +97,13 @@ const ShoppingOrderPopup: React.FC<ShoppingOrderPopupProps> = ({
             </div>
           ))}
         </div>
-        <div className="flex justify-end mt-6">
+        <div className="flex justify-between mt-6">
+          <button
+            onClick={handleContinuePlanning}
+            className="bg-blue-400 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Continue Planning
+          </button>
           <button
             onClick={handlePlaceOrder}
             className="bg-red-400 text-white px-4 py-2 rounded-lg hover:bg-red-700"

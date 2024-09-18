@@ -29,8 +29,11 @@ export interface Ingredient {
 }
 
 export interface RecipeIngredient {
-  ingredient: Ingredient;
-  notes: string;
+  ingredient?: {
+    name?: string;
+    category?: Category;
+  };
+  notes?: string;
   amount: number;
   unit: string;
 }
@@ -57,9 +60,11 @@ export type ShoppingListProps = {
 };
 
 
+
 export interface Cart {
-  recipeIngredients: RecipeIngredient[];
+  recipeIngredients: (RecipeIngredient | undefined)[];
 }
+
 
 // The sampleDay object needs to be updated to match the new structure
 export const sampleDay: Day = {
