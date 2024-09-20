@@ -10,7 +10,7 @@ import {
   Day,
   Category,
 } from "../types/mealTypes";
-import { listOfShoppingLists } from "../../../../shared/sample";
+import { listOfShoppingLists } from "../../../shared/sample";
 import ShoppingOrderPopup from "../compound/Shopping/ShoppingOrderPopup";
 import PlaceOrderPopup from "../../components/base/PlaceOrderPopup";
 

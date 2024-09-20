@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { RecipeIngredient, Category } from "../../../../shared/interfaces";
+import { RecipeIngredient, Category } from "../../../shared/interfaces";
 
 export interface Recipe {
   name: string;

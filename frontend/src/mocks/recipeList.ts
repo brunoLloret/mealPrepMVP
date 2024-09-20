@@ -1,4 +1,4 @@
-import { Recipe } from '../../../shared/interfaces';
+import { Recipe } from '../../shared/interfaces';
 
 const recipeList: Recipe[] = [
   {

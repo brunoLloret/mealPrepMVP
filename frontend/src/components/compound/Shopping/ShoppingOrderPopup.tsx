@@ -101,13 +101,13 @@ const ShoppingOrderPopup: React.FC<ShoppingOrderPopupProps> = ({
             onClick={handleContinuePlanning}
             className="bg-blue-400 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
           >
-            continue Planning
+            continue planning
           </button>
           <button
             onClick={handlePlaceOrder}
             className="bg-red-400 text-white px-4 py-2 rounded-lg hover:bg-red-700"
           >
-            clace Order
+            place order
           </button>
         </div>
       </div>
