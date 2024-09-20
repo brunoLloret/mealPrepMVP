@@ -23,7 +23,6 @@ const Recipes: React.FC = () => {
   };
 
   useEffect(() => {
-    // Initialize recipes with mock data when the component mounts
     setRecipes(recipeList);
   }, []);
 

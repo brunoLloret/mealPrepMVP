@@ -120,7 +120,7 @@ const RecipeCreator: React.FC<RecipeCreatorProps> = ({ onAddRecipe }) => {
   };
 
   return (
-    <div className="p-4 min-h-screen flex flex-col bg-lime-200 gap-4 font-mono">
+    <div className="p-8 flex flex-col bg-lime-200 gap-4 font-mono rounded-xl">
       <div className="bg-white p-4 rounded-lg shadow-md">
         <div className="relative flex items-center h-12 mb-4">
           <div className="flex-grow mr-2">
@@ -129,7 +129,7 @@ const RecipeCreator: React.FC<RecipeCreatorProps> = ({ onAddRecipe }) => {
                 type="text"
                 value={inputValue}
                 onChange={handleInputChange}
-                className="bg-green-200 border-2 border-green-500 rounded-lg px-3 font-semibold text-green-700 h-full w-full"
+                className="bg-green-200 border-2 border-green-500 w-48 h-8 rounded-lg px-3 font-semibold text-green-700"
               />
             ) : (
               <h1 className="text-lg text-green-800 font-bold h-full flex items-center">

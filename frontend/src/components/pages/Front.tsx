@@ -3,13 +3,16 @@ import Recipes from "./Recipes";
 import MealCalendar from "./MealCalendar";
 import Shopping from "./Shopping";
 import frontImage from "../../assets/frontImage.png";
-import { Cart, ShoppingLists, RecipeIngredient, Day } from "../types/mealTypes";
+import {
+  Cart,
+  ShoppingLists,
+  RecipeIngredient,
+  Day,
+  Category,
+} from "../types/mealTypes";
 import { listOfShoppingLists } from "../../../../shared/sample";
 import ShoppingOrderPopup from "../compound/Shopping/ShoppingOrderPopup";
-
-type Cart = {
-  recipeIngredients: RecipeIngredient[];
-};
+import PlaceOrderPopup from "../../components/base/PlaceOrderPopup";
 
 const Front: React.FC = () => {
   const [view, setView] = useState<null | string>(null);
@@ -117,12 +120,7 @@ const Front: React.FC = () => {
           />
         )}
         {view === "shopping" && (
-          <Shopping
-            lists={shoppingLists}
-            cart={cart}
-            setCart={setCart}
-            onShowOrderPopup={handleShowOrderPopup}
-          />
+          <Shopping lists={shoppingLists} cart={cart} setCart={setCart} />
         )}
       </div>
 

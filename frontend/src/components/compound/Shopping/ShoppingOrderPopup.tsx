@@ -23,7 +23,7 @@ const ShoppingOrderPopup: React.FC<ShoppingOrderPopupProps> = ({
   };
 
   const organizedIngredients = useMemo(() => {
-    console.log("Cart contents:", cart); // Debugging line
+    console.log("Cart contents:", cart);
 
     const categorized: Record<Category, RecipeIngredient[]> = {} as Record<
       Category,
@@ -39,15 +39,14 @@ const ShoppingOrderPopup: React.FC<ShoppingOrderPopupProps> = ({
     }
 
     cart.recipeIngredients.forEach((item, index) => {
-      if (!item) {
-        console.error(`Undefined item at index ${index}`);
-        return; // Skip this iteration
+      if (!item || !item.ingredient) {
+        console.warn(`Skipping invalid item at index ${index}:`, item);
+        return;
       }
 
-      console.log(`Processing item at index ${index}:`, item); // Debugging line
+      console.log(`Processing item at index ${index}:`, item);
 
-      // Use a default category if the ingredient or category is undefined
-      const category = (item.ingredient?.category as Category) || "Other";
+      const category = (item.ingredient.category as Category) || "Other";
       if (!categorized[category]) {
         categorized[category] = [];
       }
@@ -64,7 +63,7 @@ const ShoppingOrderPopup: React.FC<ShoppingOrderPopupProps> = ({
       }
     });
 
-    console.log("Organized ingredients:", categorized); // Debugging line
+    console.log("Organized ingredients:", categorized);
     return categorized;
   }, [cart.recipeIngredients]);
 
@@ -102,13 +101,13 @@ const ShoppingOrderPopup: React.FC<ShoppingOrderPopupProps> = ({
             onClick={handleContinuePlanning}
             className="bg-blue-400 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
           >
-            Continue Planning
+            continue Planning
           </button>
           <button
             onClick={handlePlaceOrder}
             className="bg-red-400 text-white px-4 py-2 rounded-lg hover:bg-red-700"
           >
-            Place Order
+            clace Order
           </button>
         </div>
       </div>

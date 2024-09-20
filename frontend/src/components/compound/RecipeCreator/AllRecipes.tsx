@@ -195,13 +195,13 @@ const AllRecipes: React.FC<AllRecipesProps> = ({ recipes, onDeleteRecipe }) => {
                 onClick={closePopup}
                 className="bg-red-500 text-white font-bold font-mono px-4 py-2 rounded"
               >
-                Close
+                close
               </button>
               <button
                 onClick={handleDelete}
                 className="bg-red-700 text-white font-bold font-mono px-4 py-2 rounded"
               >
-                Delete
+                delete
               </button>
             </div>
           </div>
