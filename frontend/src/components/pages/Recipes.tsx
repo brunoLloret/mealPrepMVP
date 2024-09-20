@@ -36,6 +36,12 @@ const Recipes: React.FC = () => {
     setView("lists"); // Automatically switch to the lists view after adding a recipe
   };
 
+  const handleDeleteRecipe = (recipeToDelete: Recipe) => {
+    setRecipes((prevRecipes) =>
+      prevRecipes.filter((recipe) => recipe.name !== recipeToDelete.name)
+    );
+  };
+
   return (
     <div className="bg-sky-400 flex flex-col min-h-screen w-full max-w-screen-lg mx-auto px-8 pt-12 ">
       {/* Main buttons */}
@@ -65,7 +71,9 @@ const Recipes: React.FC = () => {
 
       {/* Conditional rendering based on view */}
       <div className="flex-grow px-3">
-        {view === "lists" && <AllRecipes recipes={recipes} />}
+        {view === "lists" && (
+          <AllRecipes recipes={recipes} onDeleteRecipe={handleDeleteRecipe} />
+        )}
         {view === "create recipe" && (
           <RecipeCreator onAddRecipe={handleAddRecipe} />
         )}
