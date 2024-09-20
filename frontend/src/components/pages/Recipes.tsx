@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RecipeCreator from "../compound/RecipeCreator/RecipeCreator";
 import AllRecipes from "../compound/RecipeCreator/AllRecipes";
 import seeRecipes from "../../assets/readingBook.png";
 import createNewRecipe from "../../assets/createNewList.png";
 import cookingBowl from "../../assets/frontImage.png";
+import { Recipe } from "../types/mealTypes";
+import recipeList from "../../mocks/recipeList";
 
 const Recipes: React.FC = () => {
   const [view, setView] = useState<"lists" | "create recipe">("lists");
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
 
   const getIconSrc = () => {
     switch (view) {
@@ -19,8 +22,18 @@ const Recipes: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    // Initialize recipes with mock data when the component mounts
+    setRecipes(recipeList);
+  }, []);
+
   const handleOnView = (newView: "lists" | "create recipe") => {
     setView(newView);
+  };
+
+  const handleAddRecipe = (newRecipe: Recipe) => {
+    setRecipes((prevRecipes) => [...prevRecipes, newRecipe]);
+    setView("lists"); // Automatically switch to the lists view after adding a recipe
   };
 
   return (
@@ -52,8 +65,10 @@ const Recipes: React.FC = () => {
 
       {/* Conditional rendering based on view */}
       <div className="flex-grow px-3">
-        {view === "lists" && <AllRecipes />}
-        {view === "create recipe" && <RecipeCreator />}
+        {view === "lists" && <AllRecipes recipes={recipes} />}
+        {view === "create recipe" && (
+          <RecipeCreator onAddRecipe={handleAddRecipe} />
+        )}
       </div>
     </div>
   );
