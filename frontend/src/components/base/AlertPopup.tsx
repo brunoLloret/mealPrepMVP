@@ -27,22 +27,22 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 font-mono">
+      <div className="bg-lime-100 rounded-lg shadow-lg p-6 max-w-md w-full">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">{message}</h3>
+          <h3 className="text-lg font-semibold text-cyan-900">{message}</h3>
         </div>
         <div className="flex justify-between mt-6">
           <button
             onClick={onClose}
-            className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg flex items-center"
+            className=" bg-sky-400 text-sky-900 px-4 py-2 font-semibold rounded-lg flex items-center "
           >
             <ArrowLeftIcon size={16} className="mr-2" />
             back to ingredients
           </button>
           <button
             onClick={handleGoToCart}
-            className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center"
+            className="bg-green-500 text-white px-4 py-2 font-semibold rounded-lg flex items-center"
           >
             <ShoppingCartIcon size={16} className="mr-2" />
             go to cart
