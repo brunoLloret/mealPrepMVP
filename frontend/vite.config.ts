@@ -16,8 +16,14 @@ export default ({ mode }: ConfigEnv) => {
       },
     },
 
+    build: {
+      outDir: 'dist',
+      emptyOutDir: true,
+      sourcemap: true,
+    },
+
     server: {
-      host: '0.0.0.0',  // Add this line
+      host: '0.0.0.0',
       proxy: {
         "/api": {
           target: env.API_URL,
